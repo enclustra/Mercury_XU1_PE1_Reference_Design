@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
--- Copyright (c) 2021 by Enclustra GmbH, Switzerland.
+-- Copyright (c) 2022 by Enclustra GmbH, Switzerland.
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy of
 -- this hardware, software, firmware, and associated documentation files (the
@@ -33,7 +33,7 @@ entity Mercury_XU1_PE1 is
   
   port (
     
-    -- Anios_A
+    -- Anios A
     IOA_D0_P                       : inout   std_logic;
     IOA_D1_N                       : inout   std_logic;
     IOA_D2_P                       : inout   std_logic;
@@ -61,7 +61,7 @@ entity Mercury_XU1_PE1 is
     IOA_CLK1_N                     : inout   std_logic;
     IOA_CLK0_P                     : inout   std_logic;
     
-    -- Anios_B
+    -- Anios B
     IOB_D0_P                       : inout   std_logic;
     IOB_D1_N                       : inout   std_logic;
     IOB_D2_P                       : inout   std_logic;
@@ -87,7 +87,7 @@ entity Mercury_XU1_PE1 is
     IOB_CLK1_N                     : inout   std_logic;
     IOB_CLK0_P                     : inout   std_logic;
     
-    -- FMC0
+    -- FMC LPC Connector 0
     FMC_HA02_N                     : inout   std_logic; -- Only available on Regular modules
     FMC_HA02_P                     : inout   std_logic; -- Only available on Regular modules
     FMC_HA03_N                     : inout   std_logic;
@@ -237,14 +237,14 @@ entity Mercury_XU1_PE1 is
     FMC_CLK3_BIDIR_N               : inout   std_logic; -- Only available on Regular modules
     FMC_CLK3_BIDIR_P               : inout   std_logic; -- Only available on Regular modules
     
-    -- I2C_PL
-    I2C_SCL_PL                     : inout   std_logic;
-    I2C_SDA_PL                     : inout   std_logic;
+    -- PL I2C, shared with PS I2C
+    I2C_SCL                        : inout   std_logic;
+    I2C_SDA                        : inout   std_logic;
     
     -- LED
     LED2_N_PWR_SYNC                : out     std_logic;
     
-    -- PE1_SI5338_CLK3
+    -- PE1 SI5338 CLK3
     OSC_N                          : in      std_logic;
     OSC_P                          : in      std_logic
   );
@@ -259,10 +259,25 @@ architecture rtl of Mercury_XU1_PE1 is
     port (
       Clk100              : out    std_logic;
       Clk50               : out    std_logic;
-      Rst_N               : out    std_logic
+      Rst_N               : out    std_logic;
+      IIC_sda_i           : in     std_logic;
+      IIC_sda_o           : out    std_logic;
+      IIC_sda_t           : out    std_logic;
+      IIC_scl_i           : in     std_logic;
+      IIC_scl_o           : out    std_logic;
+      IIC_scl_t           : out    std_logic
     );
     
   end component Mercury_XU1;
+  
+  component IOBUF is
+    port (
+      I : in STD_LOGIC;
+      O : out STD_LOGIC;
+      T : in STD_LOGIC;
+      IO : inout STD_LOGIC
+    );
+  end component IOBUF;
 
   ---------------------------------------------------------------------------------------------------
   -- signal declarations
@@ -270,6 +285,12 @@ architecture rtl of Mercury_XU1_PE1 is
   signal Clk100           : std_logic;
   signal Clk50            : std_logic;
   signal Rst_N            : std_logic;
+  signal IIC_sda_i        : std_logic;
+  signal IIC_sda_o        : std_logic;
+  signal IIC_sda_t        : std_logic;
+  signal IIC_scl_i        : std_logic;
+  signal IIC_scl_o        : std_logic;
+  signal IIC_scl_t        : std_logic;
   signal LedCount         : unsigned(23 downto 0);
 
 begin
@@ -281,7 +302,29 @@ begin
     port map (
       Clk100               => Clk100,
       Clk50                => Clk50,
-      Rst_N                => Rst_N
+      Rst_N                => Rst_N,
+      IIC_sda_i            => IIC_sda_i,
+      IIC_sda_o            => IIC_sda_o,
+      IIC_sda_t            => IIC_sda_t,
+      IIC_scl_i            => IIC_scl_i,
+      IIC_scl_o            => IIC_scl_o,
+      IIC_scl_t            => IIC_scl_t
+    );
+  
+  IIC_scl_iobuf: component IOBUF
+    port map (
+      I => IIC_scl_o,
+      IO => I2C_SCL,
+      O => IIC_scl_i,
+      T => IIC_scl_t
+    );
+  
+  IIC_sda_iobuf: component IOBUF
+    port map (
+      I => IIC_sda_o,
+      IO => I2C_SDA,
+      O => IIC_sda_i,
+      T => IIC_sda_t
     );
   
   process (Clk50)
@@ -295,5 +338,5 @@ begin
     end if;
   end process;
   LED2_N_PWR_SYNC <= '0' when LedCount(LedCount'high) = '0' else 'Z';
-
+  
 end rtl;

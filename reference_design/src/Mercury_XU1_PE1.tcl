@@ -1,5 +1,5 @@
 # ----------------------------------------------------------------------------------
-# Copyright (c) 2021 by Enclustra GmbH, Switzerland.
+# Copyright (c) 2022 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -28,7 +28,7 @@ set_property BITSTREAM.CONFIG.OVERTEMPSHUTDOWN ENABLE [current_design]
 set_property BITSTREAM.CONFIG.UNUSEDPIN PULLNONE [current_design]
 # ----------------------------------------------------------------------------------
 
-# Anios_A
+# Anios A
 set_property -dict {PACKAGE_PIN H12   IOSTANDARD LVCMOS18  } [get_ports {IOA_D0_P}]
 set_property -dict {PACKAGE_PIN G11   IOSTANDARD LVCMOS18  } [get_ports {IOA_D1_N}]
 set_property -dict {PACKAGE_PIN J12   IOSTANDARD LVCMOS18  } [get_ports {IOA_D2_P}]
@@ -56,7 +56,7 @@ set_property -dict {PACKAGE_PIN E13   IOSTANDARD LVCMOS18  } [get_ports {IOA_D23
 set_property -dict {PACKAGE_PIN F10   IOSTANDARD LVCMOS18  } [get_ports {IOA_CLK1_N}]
 set_property -dict {PACKAGE_PIN G10   IOSTANDARD LVCMOS18  } [get_ports {IOA_CLK0_P}]
 
-# Anios_B
+# Anios B
 set_property -dict {PACKAGE_PIN K14   IOSTANDARD LVCMOS18  } [get_ports {IOB_D0_P}]
 set_property -dict {PACKAGE_PIN J14   IOSTANDARD LVCMOS18  } [get_ports {IOB_D1_N}]
 set_property -dict {PACKAGE_PIN K15   IOSTANDARD LVCMOS18  } [get_ports {IOB_D2_P}]
@@ -82,7 +82,7 @@ set_property -dict {PACKAGE_PIN AG9   IOSTANDARD LVCMOS18  } [get_ports {IOB_D23
 set_property -dict {PACKAGE_PIN F11   IOSTANDARD LVCMOS18  } [get_ports {IOB_CLK1_N}]
 set_property -dict {PACKAGE_PIN F12   IOSTANDARD LVCMOS18  } [get_ports {IOB_CLK0_P}]
 
-# FMC0
+# FMC LPC Connector 0
 if {$MGT_routing == "Regular"} {
   set_property -dict {PACKAGE_PIN V1    IOSTANDARD LVCMOS18  } [get_ports {FMC_HA02_N}]
   set_property -dict {PACKAGE_PIN V2    IOSTANDARD LVCMOS18  } [get_ports {FMC_HA02_P}]
@@ -234,13 +234,13 @@ set_property -dict {PACKAGE_PIN AB8   IOSTANDARD LVCMOS18  } [get_ports {FMC_CLK
 set_property -dict {PACKAGE_PIN W6    IOSTANDARD LVCMOS18  } [get_ports {FMC_CLK1_M2C_N}]
 set_property -dict {PACKAGE_PIN W7    IOSTANDARD LVCMOS18  } [get_ports {FMC_CLK1_M2C_P}]
 
-# I2C_PL
-set_property -dict {PACKAGE_PIN V3    IOSTANDARD LVCMOS18  } [get_ports {I2C_SCL_PL}]
-set_property -dict {PACKAGE_PIN Y7    IOSTANDARD LVCMOS18  } [get_ports {I2C_SDA_PL}]
+# PL I2C, shared with PS I2C
+set_property -dict {PACKAGE_PIN V3    IOSTANDARD LVCMOS18  } [get_ports {I2C_SCL}]
+set_property -dict {PACKAGE_PIN Y7    IOSTANDARD LVCMOS18  } [get_ports {I2C_SDA}]
 
 # LED
 set_property -dict {PACKAGE_PIN AE8   IOSTANDARD LVCMOS18  } [get_ports {LED2_N_PWR_SYNC}]
 
-# PE1_SI5338_CLK3
+# PE1 SI5338 CLK3
 set_property -dict {PACKAGE_PIN D14   IOSTANDARD DIFF_SSTL12} [get_ports {OSC_N}]
 set_property -dict {PACKAGE_PIN D15   IOSTANDARD DIFF_SSTL12} [get_ports {OSC_P}]
